@@ -52,21 +52,24 @@ def zoiper(url):
     requests.post(url, data=postdata, headers=headers)
 
 
-def linphone(args):
-    """Trigger a push notification for Linphone."""
+def gcm(key, token, data=None):
+    """Send a GCM push notification."""
+    url = "https://gcm-http.googleapis.com/gcm/send"
     headers = {
-        "Authorization": "key=%s" % keys['gcm'][args['app-id']],
+        "Authorization": "key=%s" % keys['gcm'][key],
         "Content-Type": "application/json"
     }
-    postdata = {
-        "to": args['pn-tok'],
-        "data": {
-            "loc-args": "Caller ID would go here if we knew what we were doing"
-        }
-    }
-    url = "https://gcm-http.googleapis.com/gcm/send"
+    postdata = {"to": token}
+    if data is not None:
+        postdata['data'] = data
     requests.post(url, data=json.dumps(postdata), headers=headers)
 
+
+def linphone(args):
+    """Trigger a push notification for Linphone."""
+    if args['pn-type'] == "google":
+        if args['app-id'] in keys['gcm']:
+            gcm(args['app-id'], args['pn-tok'])
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
@@ -86,12 +89,11 @@ if __name__ == "__main__":
                         zoiper(c['args']['X-PUSH-URI'])
                         if delay < 2000:
                             delay = 2000
-                    elif "pn-type" in c['args'] and "app-id" in c['args'] and "pn-tok" in c['args']:
-                        if c['args']['pn-type'] == "google" and c['args']['app-id'] in keys['gcm']:
-                            linphone(c['args'])
-                            if delay < 2000:
-                                delay = 2000
-            sys.stdout.write(str(delay))
+                    elif "pn-type" in c['args']:
+                        linphone(c['args'])
+                        if delay < 2000:
+                            delay = 2000
+            print(str(delay))
         elif action == "status":
             for contact in contacts:
                 c = parse_contact(contact)
