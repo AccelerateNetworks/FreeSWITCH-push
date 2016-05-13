@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+"""FreeSWITCH Push.
+
+Send GCM/Apple Push/Windows Phone Push notifications to mobile softphones.
+"""
 import sys
 import requests
 import ESL
@@ -10,15 +14,14 @@ keys = json.load(open("/etc/pushkeys.conf"))
 
 
 def parse_contact(unparse):
-    """ parse_reg(contact): parses FreeSWITCH registration strings
+    """parse_reg(contact): parses FreeSWITCH registration strings.
 
     Parameters:
         * contact: a single contact string. The sofia_contact function returns a comma separated
                    list of all of the contact strings for a given extension
     Returns:
         a dict of all of the variables in the contact string, or False if the string is an error
-    """
-
+"""
     components = unparse.split(";")
     c = components[0].split("/", 2)
     if c[0] == "error":
@@ -43,9 +46,10 @@ def parse_contact(unparse):
 
 
 def zoiper(url):
+    """Send a Zoiper push notification to a WP8 device."""
     headers = {"Content-Type": "text/xml", "X-NotificationClass": 4}
     postdata = """<?xml version="1.0" encoding="utf-8"?><root><Value1>Zoiper</Value1><Value2>Incoming</Value2><Value3>Call</Value3></root>"""
-    res = requests.post(url, data=data, headers=headers)
+    requests.post(url, data=postdata, headers=headers)
 
 
 def linphone(args):
