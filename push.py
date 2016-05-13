@@ -68,7 +68,7 @@ def gcm(key, token, data=None):
 def linphone(args):
     """Trigger a push notification for Linphone."""
     if args['pn-type'] == "google":
-        if args['app-id'] in keys['gcm']:
+        if 'app-id' in args and args['app-id'] in keys['gcm'] and 'pn-tok' in args:
             gcm(args['app-id'], args['pn-tok'])
 
 if __name__ == "__main__":
