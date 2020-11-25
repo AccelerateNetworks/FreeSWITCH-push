@@ -19,7 +19,12 @@ Right now you will need to put your google-account.json from firebase here
 
 
 ## Setting up with FreeSWITCH
-Comming soon™
+Corrently you will need the following dependencies
+* [lua-firebase](https://github.com/mopo3ilo/lua-firebase)
+* lua-cjson
+* lua-basexx
+* lua-luaossl
+<br><br>Better details comming soon™
 
 # Warning
 I have no idea what I'm doing. Please open an issue if you see something stupid that I did.
